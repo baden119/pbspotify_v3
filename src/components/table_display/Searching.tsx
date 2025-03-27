@@ -1,13 +1,19 @@
-import { useState } from "react";
-import DemoPlayList from "../../data/DemoEpisodeData.json";
+// import DemoPlayList from "../../data/DemoEpisodeData.json";
 // @ts-ignore
-import { Progress } from "react-sweet-progress";
-import "react-sweet-progress/lib/style.css";
+// import { Progress } from "react-sweet-progress";
+// import "react-sweet-progress/lib/style.css";
 import { DM_Sans } from "next/font/google";
+import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
+
+interface Searching_props {
+  episodeList: PbsEpisode[] | null;
+  searchPercentage: number | null;
+}
 
 const dm_sans = DM_Sans({
   weight: "400",
   subsets: ["latin"],
+  preload: true,
 });
 
 const CreateDate = (date: string) => {
@@ -20,9 +26,18 @@ const CreateDate = (date: string) => {
 
 const cellStyle = "px-1 border border-purple-400 text-sm md:text-base md:p-1";
 
-const Searching = () => {
-  const [completed, setCompleted] = useState(50);
+const renderRow = (song: PbsTrack, date: string) => {
+  return (
+    <tr key={song.id} className="even:bg-tableStripe">
+      <td className={cellStyle + " text-center"}>{CreateDate(date)}</td>
+      <td className={cellStyle}>
+        {song.artist} / {song.title}
+      </td>
+    </tr>
+  );
+};
 
+const Searching = ({ episodeList, searchPercentage }: Searching_props) => {
   return (
     <div className="flex justify-between">
       <div className="hidden w-1/4 md:block"></div>
@@ -38,17 +53,12 @@ const Searching = () => {
               </tr>
             </thead>
             <tbody>
-              {DemoPlayList.data.map((song) => {
-                return (
-                  <tr key={song.id} className="even:bg-tableStripe">
-                    <td className={cellStyle + " text-center"}>
-                      {CreateDate(DemoPlayList.date)}
-                    </td>
-                    <td className={cellStyle}>
-                      {song.artist} / {song.track}
-                    </td>
-                  </tr>
-                );
+              {episodeList?.map((episode) => {
+                if (episode.trackList) {
+                  return episode.trackList.map((song) => {
+                    return renderRow(song, episode.date);
+                  });
+                }
               })}
             </tbody>
           </table>
@@ -59,32 +69,7 @@ const Searching = () => {
             Searching Spotify...
           </div>
           <div className="flex flex-col items-center">
-            <div className="grow mt-10">
-              <Progress
-                theme={{
-                  error: {
-                    trailColor: "pink",
-                    color: "red",
-                  },
-                  default: {
-                    trailColor: "lightblue",
-                    color: "blue",
-                  },
-                  active: {
-                    trailColor: "yellow",
-                    color: "orange",
-                  },
-                  success: {
-                    trailColor: "lime",
-                    color: "green",
-                  },
-                }}
-                strokeWidth={5}
-                width={150}
-                type="circle"
-                percent={50}
-              />
-            </div>
+            <div className="text-center text-xl">{searchPercentage}</div>
           </div>
         </div>
       </div>

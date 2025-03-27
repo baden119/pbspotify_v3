@@ -1,15 +1,14 @@
-import DemoPlayList from "../../data/DemoEpisodeData.json";
-// import { Dosis } from "next/font/google";
 import { DM_Sans } from "next/font/google";
+import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
 
-// const dosis = Dosis({
-//   weight: "400",
-//   subsets: ["latin"],
-// });
+interface Completed_props {
+  searchResults: PbsEpisode[] | null;
+}
 
 const dm_sans = DM_Sans({
   weight: "400",
   subsets: ["latin"],
+  preload: true,
 });
 
 const CreateDate = (date: string) => {
@@ -21,7 +20,33 @@ const CreateDate = (date: string) => {
 };
 const cellStyle = "px-1 border border-purple-400 text-sm md:text-base md:p-1";
 
-const Completed = () => {
+const renderRow = (song: PbsTrack, date: string) => {
+  if (song.spotify_id)
+    // TODO Add track select/unselect functionality.
+    return (
+      <tr key={song.id} className="even:bg-tableStripe">
+        <td className={cellStyle + " text-center"}>{CreateDate(date)}</td>
+        <td className={cellStyle}>
+          {song.artist} / {song.title}
+        </td>
+        <td className={cellStyle}>
+          {song.spotify_artist} / {song.spotify_title}
+        </td>
+      </tr>
+    );
+  else
+    return (
+      <tr key={song.id} className="even:bg-tableStripe">
+        <td className={cellStyle + " text-center"}>{CreateDate(date)}</td>
+        <td className={cellStyle}>
+          {song.artist} / {song.title}
+        </td>
+        <td className={cellStyle}>No Match Found</td>
+      </tr>
+    );
+};
+
+const Completed = ({ searchResults }: Completed_props) => {
   return (
     <div className="flex justify-between">
       <div className="hidden w-1/4 md:block"></div>
@@ -35,35 +60,12 @@ const Completed = () => {
             </tr>
           </thead>
           <tbody>
-            {DemoPlayList.data.map((song) => {
-              return (
-                <tr key={song.id} className="even:bg-tableStripe">
-                  <td className={cellStyle + " text-center"}>
-                    {CreateDate(DemoPlayList.date)}
-                  </td>
-                  <td className={cellStyle}>
-                    {song.artist} / {song.track}
-                  </td>
-                  <td className={cellStyle}>
-                    {song.artist} / {song.track}
-                  </td>
-                </tr>
-              );
-            })}
-            {DemoPlayList.data.map((song) => {
-              return (
-                <tr key={song.id} className="even:bg-tableStripe">
-                  <td className={cellStyle + " text-center"}>
-                    {CreateDate(DemoPlayList.date)}
-                  </td>
-                  <td className={cellStyle}>
-                    {song.artist} / {song.track}
-                  </td>
-                  <td className={cellStyle}>
-                    {song.artist} / {song.track}
-                  </td>
-                </tr>
-              );
+            {searchResults?.map((episode) => {
+              if (episode.trackList) {
+                return episode.trackList.map((song) => {
+                  return renderRow(song, episode.date);
+                });
+              }
             })}
           </tbody>
         </table>
