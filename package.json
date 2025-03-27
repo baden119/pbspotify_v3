@@ -19,6 +19,7 @@
     "react-select": "^5.8.0",
     "react-sweet-progress": "^1.1.2",
     "react-switch": "^7.0.0",
+    "react-toastify": "^11.0.5",
     "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {

@@ -1,11 +1,13 @@
 import { DM_Sans } from "next/font/google";
 import { Unbounded } from "next/font/google";
 import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
+import Spinner from "../Spinner";
 
 interface Browse_props {
   episodeList: PbsEpisode[] | null;
   showName: string | null;
   showDescription: string;
+  loading: boolean;
 }
 
 const dm_sans = DM_Sans({
@@ -43,7 +45,26 @@ const renderRow = (song: PbsTrack, date: string) => {
   );
 };
 
-const Browse = ({ episodeList, showName, showDescription }: Browse_props) => {
+const Browse = ({
+  episodeList,
+  showName,
+  showDescription,
+  loading,
+}: Browse_props) => {
+  if (loading) {
+    return (
+      <div className="flex justify-center">
+        <div className="hidden w-1/4 md:block"></div>
+        <div>
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
+          <h1>Fetching Show Data from PBS...</h1>
+        </div>
+        <div className="hidden w-1/4 md:block"></div>
+      </div>
+    );
+  }
   if (episodeList)
     return (
       <div className="flex justify-between">

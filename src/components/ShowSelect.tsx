@@ -20,11 +20,11 @@ const ShowSelect = ({ ShowSelectCallback, resetTrigger }: ShowSelect_props) => {
   const [selectedShowName, setSelectedShowName] = useState("");
   const [selectedShowURL, setSelectedShowURL] = useState<string | null>(null);
   const [selectedShowDescription, setSelectedShowDescription] = useState("");
-  const [selectedShowOption, setSelectedShowOption] = useState(null); // For resetting the show select
+  const [selectedShowOption, setSelectedShowOption] = useState(null); // For resetting the show select dropdown
   const [selectedEpisodeOption, setSelectedEpisodeOption] = useState({
     value: 5,
     label: "5",
-  }); // For resetting the episode count select
+  }); // For resetting the episode count select dropdown
 
   useEffect(() => {
     // Reset state when resetTrigger changes
@@ -87,7 +87,7 @@ const ShowSelect = ({ ShowSelectCallback, resetTrigger }: ShowSelect_props) => {
           className="block text-gray-700 text-sm font-bold"
           htmlFor="ShowSelect"
         >
-          PBS Show {resetTrigger.toString()}
+          PBS Show
         </label>
         <Select
           maxMenuHeight={500}

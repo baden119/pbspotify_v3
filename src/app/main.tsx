@@ -4,6 +4,7 @@ import { PbsEpisode } from "@/utils/interfaces";
 import axios from "axios";
 import { Unbounded } from "next/font/google";
 import spotifyApi from "@/lib/spotify";
+import { ToastContainer, toast } from "react-toastify";
 import Header from "@/components/Header";
 import ShowSelect from "@/components/ShowSelect";
 import SpotifySearch from "@/components/SpotifySearch";
@@ -40,30 +41,35 @@ export const Main = ({ sessionData }: any) => {
   const [searchPercentage, setSearchPercentage] = useState<number>(0);
   const [tokenExpires, setTokenExpires] = useState<number | null>(null);
   const [resetTrigger, setResetTrigger] = useState(false);
+  const [pbsApiLoading, setpbsApiLoading] = useState(false);
 
   //   // When PBS Show is selected, fetch episodes from API, adjust length per episode count and save episodelist to state.
   useEffect(() => {
     setSearchResults(null);
-    const fetchSongList = async () => {
-      try {
-        const { data } = await axios.post<PbsEpisode[]>("/api/pbs", {
-          url: selectedShowURL,
-        });
-        setEpisodeList(data.slice(0, episodeCount));
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.log("error message: ", error.message);
-          return error.message;
-        } else {
-          console.log("unexpected error: ", error);
-          return "An unexpected error occurred";
+    if (selectedShowURL) {
+      setTableDisplayState("Browse");
+      setpbsApiLoading(true);
+      const fetchSongList = async () => {
+        try {
+          const { data } = await axios.post<PbsEpisode[]>("/api/pbs", {
+            url: selectedShowURL,
+          });
+          setEpisodeList(data.slice(0, episodeCount));
+          setpbsApiLoading(false);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            console.log("error message: ", error.message);
+            return error.message;
+          } else {
+            console.log("unexpected error: ", error);
+            return "An unexpected error occurred";
+          }
         }
+      };
+      if (selectedShowURL && episodeCount) {
+        fetchSongList();
       }
-    };
-    if (selectedShowURL && episodeCount) {
-      fetchSongList();
     }
-    setTableDisplayState("Browse");
   }, [selectedShowURL, episodeCount]);
 
   //   // Handle expired access token.
@@ -83,6 +89,7 @@ export const Main = ({ sessionData }: any) => {
   }, []);
 
   // Check Session Data prop, set state values.
+  // TODO This still runs when loggedout, need to look into it.
   useEffect(() => {
     if (sessionData) {
       spotifyApi.setAccessToken(sessionData.token.access_token);
@@ -188,6 +195,7 @@ export const Main = ({ sessionData }: any) => {
           episodeList={episodeList}
           showName={selectedShowName}
           showDescription={selectedShowDescription}
+          loading={pbsApiLoading}
         />
       );
     }
@@ -204,6 +212,12 @@ export const Main = ({ sessionData }: any) => {
     }
   };
 
+  const notify = () =>
+    toast.info("Playlist Created and Saved to Spotify!", {
+      position: "top-center",
+      theme: "colored",
+    });
+
   return (
     <div className="bg-babyPink min-h-screen">
       <Header displayName={displayName} loggedIn={loggedIn} />
@@ -211,6 +225,17 @@ export const Main = ({ sessionData }: any) => {
         ShowSelectCallback={handle_showSelect}
         resetTrigger={resetTrigger}
       />
+
+      <div className="flex justify-center my-2">
+        <button
+          className="bg-navBarPurple flex items-center hover:bg-altNavBarPurple text-black mx-6 py-2 px-4 rounded-full md:py-5 md:px-10"
+          onClick={() => notify()}
+        >
+          <div className={`${unbounded.className}`}>Alert Test</div>
+        </button>
+        <ToastContainer theme="colored" />
+      </div>
+
       {renderSpotifySearch()}
       {renderPlaylistSaver()}
       {renderTable()}
@@ -219,11 +244,13 @@ export const Main = ({ sessionData }: any) => {
 };
 
 // GENERAL PURPOSE BUTTON
-// <div className="flex justify-center my-2">
-//   <button
-//     className="bg-navBarPurple flex items-center hover:bg-altNavBarPurple text-black mx-6 py-2 px-4 rounded-full md:py-5 md:px-10"
-//     onClick={() => resetTest()}
-//   >
-//     <div className={`${unbounded.className}`}>Reset</div>
-//   </button>
-// </div>
+{
+  /* <div className="flex justify-center my-2">
+  <button
+    className="bg-navBarPurple flex items-center hover:bg-altNavBarPurple text-black mx-6 py-2 px-4 rounded-full md:py-5 md:px-10"
+    onClick={() => resetTest()}
+  >
+    <div className={`${unbounded.className}`}>Reset</div>
+  </button>
+</div> */
+}
