@@ -86,11 +86,8 @@ const PlaylistSaver = ({
 
       adjusted_arrays.map(async (array) => {
         try {
-          const populateResponse = await spotifyApi.addTracksToPlaylist(
-            newPlaylistID,
-            array
-          );
-          console.log(populateResponse.body);
+          await spotifyApi.addTracksToPlaylist(newPlaylistID, array);
+          playlistSaverCallback();
         } catch (err) {
           console.error(err);
         }

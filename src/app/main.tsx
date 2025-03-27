@@ -2,24 +2,15 @@
 import { useState, useEffect } from "react";
 import { PbsEpisode } from "@/utils/interfaces";
 import axios from "axios";
-import { Unbounded } from "next/font/google";
 import spotifyApi from "@/lib/spotify";
-import { ToastContainer, toast } from "react-toastify";
 import Header from "@/components/Header";
 import ShowSelect from "@/components/ShowSelect";
 import SpotifySearch from "@/components/SpotifySearch";
 import Browse from "@/components/table_display/Browse";
 import Completed from "@/components/table_display/Completed";
 import Searching from "@/components/table_display/Searching";
+import SuccessMessage from "@/components/SuccessMessage";
 import PlaylistSaver from "@/components/PlaylistSaver";
-
-const unbounded = Unbounded({
-  weight: "300",
-  subsets: ["latin"],
-  preload: true,
-});
-
-// TODO Some kind of Alert Functionality
 
 // TODO proper typing for sessionData
 export const Main = ({ sessionData }: any) => {
@@ -42,12 +33,14 @@ export const Main = ({ sessionData }: any) => {
   const [tokenExpires, setTokenExpires] = useState<number | null>(null);
   const [resetTrigger, setResetTrigger] = useState(false);
   const [pbsApiLoading, setpbsApiLoading] = useState(false);
+  const [successfulSave, setSuccessfulSave] = useState(false);
 
   //   // When PBS Show is selected, fetch episodes from API, adjust length per episode count and save episodelist to state.
   useEffect(() => {
     setSearchResults(null);
     if (selectedShowURL) {
       setTableDisplayState("Browse");
+      setSuccessfulSave(false);
       setpbsApiLoading(true);
       const fetchSongList = async () => {
         try {
@@ -75,7 +68,7 @@ export const Main = ({ sessionData }: any) => {
   //   // Handle expired access token.
   //   // My attempts at using refresh token functionality haven't worked, it seems there is an issue with the library:
   //   // https://github.com/thelinmichael/spotify-web-api-node/issues/441
-  //   // Automatic token refresh would be nice, but I dont think it's a critical issue given the purpose of the app.
+  //   // Automatic token refresh would be nice, but I dont think it's a essential for this app.
   useEffect(() => {
     const interval = setInterval(() => {
       tokenExpires && console.log(tokenExpires - Date.now());
@@ -123,14 +116,14 @@ export const Main = ({ sessionData }: any) => {
     }
   }, [searchPercentage, searchResults]);
 
-  //   // Callback Functions
+  // Callback Functions
   const handle_showSelect = (data: any) => {
     setEpisodeCount(data.episodeCount);
     setSelectedShowDescription(data.selectedShowDescription);
     setSelectedShowURL(data.selectedShowURL);
     setSelectedShowName(data.selectedShowName);
   };
-
+  // TODO this is perhaps redundant?
   const handle_PlaylistName = (data: string) => {
     setPlaylistName(data);
   };
@@ -143,8 +136,9 @@ export const Main = ({ sessionData }: any) => {
     setSearchPercentage(data);
   };
 
-  const handle_PlaylistSaverCallback = () => {
-    console.log("Data recieved from Playlist Saver component...");
+  const handle_PlaylistSaverCallback = async () => {
+    handle_resetCallback();
+    setSuccessfulSave(true);
   };
 
   const handle_resetCallback = () => {
@@ -156,7 +150,7 @@ export const Main = ({ sessionData }: any) => {
     setSearchPercentage(0);
   };
 
-  //   // Component Rendering
+  // Component Rendering
   const renderSpotifySearch = () => {
     if (loggedIn && episodeList && !searchResults) {
       return (
@@ -212,30 +206,19 @@ export const Main = ({ sessionData }: any) => {
     }
   };
 
-  const notify = () =>
-    toast.info("Playlist Created and Saved to Spotify!", {
-      position: "top-center",
-      theme: "colored",
-    });
+  const renderSuccessMessage = () => {
+    if (successfulSave) return <SuccessMessage />;
+  };
 
   return (
     <div className="bg-babyPink min-h-screen">
       <Header displayName={displayName} loggedIn={loggedIn} />
+      <span className="flex justify-center my-2"></span>
       <ShowSelect
         ShowSelectCallback={handle_showSelect}
         resetTrigger={resetTrigger}
       />
-
-      <div className="flex justify-center my-2">
-        <button
-          className="bg-navBarPurple flex items-center hover:bg-altNavBarPurple text-black mx-6 py-2 px-4 rounded-full md:py-5 md:px-10"
-          onClick={() => notify()}
-        >
-          <div className={`${unbounded.className}`}>Alert Test</div>
-        </button>
-        <ToastContainer theme="colored" />
-      </div>
-
+      {renderSuccessMessage()}
       {renderSpotifySearch()}
       {renderPlaylistSaver()}
       {renderTable()}
@@ -244,13 +227,12 @@ export const Main = ({ sessionData }: any) => {
 };
 
 // GENERAL PURPOSE BUTTON
-{
-  /* <div className="flex justify-center my-2">
-  <button
-    className="bg-navBarPurple flex items-center hover:bg-altNavBarPurple text-black mx-6 py-2 px-4 rounded-full md:py-5 md:px-10"
-    onClick={() => resetTest()}
-  >
-    <div className={`${unbounded.className}`}>Reset</div>
-  </button>
-</div> */
-}
+
+//    <div className="flex justify-center my-2">
+//   <button
+//     className="bg-navBarPurple flex items-center hover:bg-altNavBarPurple text-black mx-6 py-2 px-4 rounded-full md:py-5 md:px-10"
+//     onClick={() => resetTest()}
+//   >
+//     <div className={`${unbounded.className}`}>Reset</div>
+//   </button>
+// </div>

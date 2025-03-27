@@ -5,6 +5,7 @@ export interface PbsTrack {
   spotify_artist?: string;
   spotify_title?: string;
   spotify_id?: string;
+  excluded_by_user: boolean;
 }
 
 export interface PbsEpisode {

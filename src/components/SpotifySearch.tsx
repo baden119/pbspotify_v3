@@ -41,6 +41,7 @@ const SpotifySearch = ({
 
   // Modifys track and artist string data recieved from the PBS API, helps Spotify API search accuracy.
   // TODO Test and imporve and move to library file?
+  // TODO I had this idea of modifying the browse comonent in a similar way to the completed component by making the song info clickable but it would knid of preview the string manipulations before searching, it will be good for testing, and even you could do a thing where people can choose the manipulation method.
   const modifyInputString = (inputString: string) => {
     if (inputString) {
       inputString = inputString.substring(0, 15);
@@ -101,6 +102,7 @@ const SpotifySearch = ({
                 spotify_id: response.body.tracks?.items[0].id,
                 spotify_artist: response.body.tracks?.items[0].artists[0].name,
                 spotify_title: response.body.tracks?.items[0].name,
+                excluded_by_user: false,
               });
               // Keep track of search progress with updateSearchPercentage function
               updateSearchPercentage(
