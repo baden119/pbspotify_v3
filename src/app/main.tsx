@@ -89,12 +89,12 @@ export const Main = ({ sessionData }: any) => {
       setTokenExpires(Date.now() + 3600000);
       setLoggedIn(true);
       spotifyApi.getMe().then(
-        function (data) {
+        function (data: any) {
           if (data.body.display_name) {
             setDisplayName(data.body.display_name);
           }
         },
-        function (err) {
+        function (err: any) {
           console.error(err);
           console.log("Setting LoggedIn to False...");
           setLoggedIn(false);
