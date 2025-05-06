@@ -1,9 +1,14 @@
-import { useState } from "react";
+"use client";
+import { useState, useEffect } from "react";
 import { DM_Sans } from "next/font/google";
 import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
 
+// TODO: Completed Component has all HTML <table> tags replaced with <div> tags, to be honest i dont remember what error this was fixing, but here we are...
+
 interface Completed_props {
   searchResults: PbsEpisode[] | null;
+  // TODO Typing for callback function
+  exclusionCallback: any;
 }
 
 const dm_sans = DM_Sans({
@@ -21,12 +26,17 @@ const CreateDate = (date: string) => {
 };
 const cellStyle = "px-1 border border-purple-400 md:text-base md:p-1";
 
-const Completed = ({ searchResults }: Completed_props) => {
+const Completed = ({ searchResults, exclusionCallback }: Completed_props) => {
   const [songList, setSongList] = useState(searchResults);
+
+  // SongList Callback
+  useEffect(() => {
+    exclusionCallback(songList);
+  }, [songList]);
 
   const excludeResult = (id: number) => {
     setSongList((prevSongList) => {
-      if (!prevSongList) return null; // Return null if the list is null
+      if (!prevSongList) return null;
       return prevSongList.map((episode) => ({
         ...episode,
         trackList: episode.trackList?.map((track) =>
@@ -68,7 +78,6 @@ const Completed = ({ searchResults }: Completed_props) => {
     if (song.spotify_id)
       // TODO Add track select/unselect functionality.
       return (
-        // Removed <tbody> tags, keep an eye on it if theres an issue
         <div key={song.id} className="table-row even:bg-tableStripe">
           <div className={cellStyle + " table-cell text-center"}>
             {CreateDate(date)}
@@ -76,20 +85,20 @@ const Completed = ({ searchResults }: Completed_props) => {
           <div className={cellStyle + " table-cell"}>
             {song.artist} / {song.title}
           </div>
-
           {renderExclusion(song)}
         </div>
       );
     else
       return (
-        // TODO Change to <div> tags to prevent HYDRATION ERROR!!!111!
-        <tr key={song.id} className="even:bg-tableStripe">
-          <td className={cellStyle + " text-center"}>{CreateDate(date)}</td>
-          <td className={cellStyle}>
+        <div key={song.id} className=" table-row even:bg-tableStripe">
+          <div className={cellStyle + " table-cell text-center"}>
+            {CreateDate(date)}
+          </div>
+          <div className={cellStyle + " table-cell"}>
             {song.artist} / {song.title}
-          </td>
-          <td className={cellStyle}>No Match Found</td>
-        </tr>
+          </div>
+          <div className={cellStyle + " table-cell"}>No Match Found</div>
+        </div>
       );
   };
 
@@ -99,11 +108,15 @@ const Completed = ({ searchResults }: Completed_props) => {
       <div className={`${dm_sans.className} grow`}>
         <div className="table w-full table-auto border-collapse border border-purple-400">
           <div className="table-header-group">
-            <tr>
-              <th className={cellStyle}>Date</th>
-              <th className={cellStyle}>Song Info from PBS</th>
-              <th className={cellStyle}>Spotify Search Result</th>
-            </tr>
+            <div className="table-row">
+              <div className={cellStyle + " table-cell"}>Date</div>
+              <div className={cellStyle + " table-cell"}>
+                Song Info from PBS
+              </div>
+              <div className={cellStyle + " table-cell"}>
+                Spotify Search Result
+              </div>
+            </div>
           </div>
           {songList?.map((episode) => {
             if (episode.trackList) {
@@ -119,15 +132,3 @@ const Completed = ({ searchResults }: Completed_props) => {
   );
 };
 export default Completed;
-
-// return (
-//   <tr key={song.id} className="even:bg-tableStripe">
-//     <td className={cellStyle + " text-center"}>{CreateDate(date)}</td>
-//     <td className={cellStyle}>
-//       {song.artist} / {song.title}
-//     </td>
-//     <td className={cellStyle}>
-//       {song.spotify_artist} / {song.spotify_title}
-//     </td>
-//   </tr>
-// );

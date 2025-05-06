@@ -53,7 +53,7 @@ const PlaylistSaver = ({
     // Parse Spotify IDs out of searchResults array
     searchResults?.forEach((episode) => {
       episode.trackList?.forEach((track) => {
-        if (track.spotify_id) {
+        if (track.spotify_id && !track.excluded_by_user) {
           spotifyIDs.push(`spotify:track:${track.spotify_id}`);
         }
       });

@@ -150,6 +150,10 @@ export const Main = ({ sessionData }: any) => {
     setSearchPercentage(0);
   };
 
+  const handle_exclusionCallback = (data: PbsEpisode[]) => {
+    setSearchResults(data);
+  };
+
   // Component Rendering
   const renderSpotifySearch = () => {
     if (loggedIn && episodeList && !searchResults) {
@@ -202,7 +206,12 @@ export const Main = ({ sessionData }: any) => {
       );
     }
     if (tableDisplayState === "Completed") {
-      return <Completed searchResults={searchResults} />;
+      return (
+        <Completed
+          searchResults={searchResults}
+          exclusionCallback={handle_exclusionCallback}
+        />
+      );
     }
   };
 
