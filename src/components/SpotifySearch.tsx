@@ -1,16 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
+import { modifyInputString } from "@/utils/StringModifiers";
 import SpotifyWebApi from "spotify-web-api-node";
 import { FaSpotify } from "react-icons/fa";
 import { Unbounded } from "next/font/google";
 
 interface SpotifySearch_props {
-  // TODO Typing for callback function
   spotifyApi: SpotifyWebApi;
   episodeList: PbsEpisode[] | null;
-  searchResultsCallback: any;
-  searchPercentageCallback: any;
+  searchResultsCallback: (data: PbsEpisode[]) => void;
+  searchPercentageCallback: (data: number) => void;
 }
 const unbounded = Unbounded({
   weight: "300",
@@ -39,28 +39,6 @@ const SpotifySearch = ({
     }
   }, [searchPercentage]);
 
-  // Modifys track and artist string data recieved from the PBS API, helps Spotify API search accuracy.
-  // TODO Test and imporve and move to library file?
-  // TODO I had this idea of modifying the browse comonent in a similar way to the completed component by making the song info clickable but it would knid of preview the string manipulations before searching, it will be good for testing, and even you could do a thing where people can choose the manipulation method.
-  const modifyInputString = (inputString: string) => {
-    if (inputString) {
-      inputString = inputString.substring(0, 15);
-      inputString = inputString.split("[")[0];
-      inputString = inputString.split("-")[0];
-      inputString = inputString.split("(")[0];
-      inputString = inputString.split("ft.")[0];
-      inputString = inputString.split("feat.")[0];
-      inputString = inputString.split("feat")[0];
-      inputString = inputString.split("FT")[0];
-      inputString = inputString.split("Ft.")[0];
-      inputString = inputString.replace(/[^a-zA-Z\s,&]/g, "");
-      // below is specific for RadioCity Show. Might mess up others...
-      inputString = inputString.replace(/^\d+\.\s*/, "");
-      inputString = inputString.replace(/\s*-\s*$/, "");
-      return inputString;
-    } else return;
-  };
-
   // Keeps track of serach progress, passes data back to main component via callback.
   const updateSearchPercentage = (percentageDone: number, total: number) => {
     const newCount = Math.round((percentageDone / total) * 100);
@@ -76,7 +54,6 @@ const SpotifySearch = ({
       });
     });
 
-    // TODO Move this function to a library file?
     // Throttled Search routine. Passes search requests to the Spotify API while avoiding 429 Errors.
     // Creates modified track objects with search results if successful.
     let trackListWithResponses: PbsTrack[] = [];

@@ -13,3 +13,10 @@ export interface PbsEpisode {
   trackList?: PbsTrack[] | null;
   date: string;
 }
+
+export interface ShowSelectCallbackParams {
+  episodeCount: number;
+  selectedShowURL: string | null;
+  selectedShowName: string;
+  selectedShowDescription: string;
+}

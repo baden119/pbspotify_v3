@@ -1,14 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { ShowSelectCallbackParams } from "@/utils/interfaces";
 import Select from "react-select";
 import CurrentShows from "../data/currentShows.json";
-
-interface ShowSelectCallbackParams {
-  episodeCount: number;
-  selectedShowURL: string | null;
-  selectedShowName: string;
-  selectedShowDescription: string;
-}
 
 interface ShowSelect_props {
   ShowSelectCallback: (data: ShowSelectCallbackParams) => void;

@@ -5,12 +5,11 @@ import { PbsEpisode } from "@/utils/interfaces";
 import SpotifyWebApi from "spotify-web-api-node";
 
 interface PlaylistSaver_props {
-  // TODO Typing for callback function
   searchResults: PbsEpisode[] | null;
   spotifyApi: SpotifyWebApi;
   pbsShowName: string | null;
-  playlistSaverCallback: any;
-  resetCallback: any;
+  playlistSaverCallback: () => Promise<void>;
+  resetCallback: () => void;
 }
 
 const unbounded = Unbounded({

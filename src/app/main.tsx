@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { PbsEpisode } from "@/utils/interfaces";
+import { PbsEpisode, ShowSelectCallbackParams } from "@/utils/interfaces";
 import axios from "axios";
 import spotifyApi from "@/lib/spotify";
 import Header from "@/components/Header";
@@ -117,12 +117,13 @@ export const Main = ({ sessionData }: any) => {
   }, [searchPercentage, searchResults]);
 
   // Callback Functions
-  const handle_showSelect = (data: any) => {
+  const handle_showSelect = (data: ShowSelectCallbackParams) => {
     setEpisodeCount(data.episodeCount);
     setSelectedShowDescription(data.selectedShowDescription);
     setSelectedShowURL(data.selectedShowURL);
     setSelectedShowName(data.selectedShowName);
   };
+
   // TODO this is perhaps redundant?
   const handle_PlaylistName = (data: string) => {
     setPlaylistName(data);
@@ -136,12 +137,13 @@ export const Main = ({ sessionData }: any) => {
     setSearchPercentage(data);
   };
 
-  const handle_PlaylistSaverCallback = async () => {
+  const handle_PlaylistSaverCallback: () => Promise<void> = async () => {
+    // Above is typeing for an async function with no input parameters.
     handle_resetCallback();
     setSuccessfulSave(true);
   };
 
-  const handle_resetCallback = () => {
+  const handle_resetCallback: () => void = () => {
     setResetTrigger((prev) => !prev);
     setTableDisplayState(null);
     setEpisodeList(null);
@@ -150,7 +152,7 @@ export const Main = ({ sessionData }: any) => {
     setSearchPercentage(0);
   };
 
-  const handle_exclusionCallback = (data: PbsEpisode[]) => {
+  const handle_exclusionCallback = (data: PbsEpisode[] | null) => {
     setSearchResults(data);
   };
 

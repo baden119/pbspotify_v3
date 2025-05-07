@@ -1,6 +1,10 @@
-import { DM_Sans } from "next/font/google";
-import { Unbounded } from "next/font/google";
 import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
+import {
+  unbounded,
+  dm_sans,
+  cellStyle,
+  CreateDate,
+} from "@/utils/TableDisplayUtils";
 import Spinner from "../Spinner";
 
 interface Browse_props {
@@ -9,29 +13,6 @@ interface Browse_props {
   showDescription: string;
   loading: boolean;
 }
-
-const dm_sans = DM_Sans({
-  weight: "400",
-  subsets: ["latin"],
-  preload: true,
-});
-
-const unbounded = Unbounded({
-  weight: "300",
-  subsets: ["latin"],
-  preload: true,
-});
-
-// TODO Create Date, font data etc are repeated, export to single file.
-
-const CreateDate = (date: string) => {
-  return new Intl.DateTimeFormat("en-AU", {
-    day: "numeric",
-    month: "numeric",
-    year: "2-digit",
-  }).format(new Date(date));
-};
-const cellStyle = "px-1 border border-purple-400 text-sm md:text-base md:p-1";
 
 const renderRow = (song: PbsTrack, date: string) => {
   return (

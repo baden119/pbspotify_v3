@@ -1,35 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
-import { DM_Sans } from "next/font/google";
 import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
+import { dm_sans, cellStyle, CreateDate } from "@/utils/TableDisplayUtils";
 
 // TODO: Completed Component has all HTML <table> tags replaced with <div> tags, to be honest i dont remember what error this was fixing, but here we are...
 
 interface Completed_props {
   searchResults: PbsEpisode[] | null;
-  // TODO Typing for callback function
-  exclusionCallback: any;
+  exclusionCallback: (data: PbsEpisode[] | null) => void;
 }
-
-const dm_sans = DM_Sans({
-  weight: "400",
-  subsets: ["latin"],
-  preload: true,
-});
-
-const CreateDate = (date: string) => {
-  return new Intl.DateTimeFormat("en-AU", {
-    day: "numeric",
-    month: "numeric",
-    year: "2-digit",
-  }).format(new Date(date));
-};
-const cellStyle = "px-1 border border-purple-400 md:text-base md:p-1";
 
 const Completed = ({ searchResults, exclusionCallback }: Completed_props) => {
   const [songList, setSongList] = useState(searchResults);
 
-  // SongList Callback
   useEffect(() => {
     exclusionCallback(songList);
   }, [songList]);
@@ -76,7 +59,6 @@ const Completed = ({ searchResults, exclusionCallback }: Completed_props) => {
     };
 
     if (song.spotify_id)
-      // TODO Add track select/unselect functionality.
       return (
         <div key={song.id} className="table-row even:bg-tableStripe">
           <div className={cellStyle + " table-cell text-center"}>
