@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import { PbsEpisode, PbsTrack } from "@/utils/interfaces";
 import { dm_sans, cellStyle, CreateDate } from "@/utils/TableDisplayUtils";
 
-// TODO: Completed Component has all HTML <table> tags replaced with <div> tags, to be honest i dont remember what error this was fixing, but here we are...
-
 interface Completed_props {
   searchResults: PbsEpisode[] | null;
   exclusionCallback: (data: PbsEpisode[] | null) => void;
