@@ -105,7 +105,7 @@ const About = () => {
                       width={2212}
                       height={540}
                     ></Image>
-                    <div className="text-center">Baden's LinkedIn</div>
+                    {/* <div className="text-center">Baden's LinkedIn</div> */}
                   </Link>
                 </div>
                 <div className="object-contain w-60">
@@ -122,7 +122,7 @@ const About = () => {
                       width={635}
                       height={898}
                     ></Image>
-                    <div className="text-center">Baden's Resume</div>
+                    {/* <div className="text-center">Baden's Resume</div> */}
                   </Link>
                 </div>
               </div>
