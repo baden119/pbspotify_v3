@@ -105,13 +105,17 @@ const About = () => {
                       width={2212}
                       height={540}
                     ></Image>
-                    {/* <div className="text-center">Baden's LinkedIn</div> */}
+                    {/* TODO Find out the build issue with this */}
+                    {/* 
+                    108:55  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+125:55  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities */}
+                    {/* <div className="text-center">Baden&#39s LinkedIn</div> */}
                   </Link>
                 </div>
                 <div className="object-contain w-60">
                   <Link
                     href={
-                      "https://drive.google.com/file/d/1imyux4aYUyrB1iAZi0FBgyDQD8wIYMPh/view?usp=sharing"
+                      "https://drive.google.com/file/d/17czArivRUZX3C5X35NRhBys07K8z5BOE/view?usp=sharing"
                     }
                     target="_blank"
                     rel="noreferrer"
